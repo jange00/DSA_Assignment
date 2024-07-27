@@ -1,16 +1,18 @@
-// a)
-// Imagine you're a scheduling officer at a university with n classrooms numbered 0 to n-1. Several different courses 
-// require classrooms throughout the day, represented by an array of classes classes[i] = [starti, endi], where starti is 
-// the start time of the class and endi is the end time (both in whole hours). Your goal is to assign each course to a 
-// classroom while minimizing disruption and maximizing classroom utilization. Here are the rules:
-// • Priority Scheduling: Classes with earlier start times have priority when assigning classrooms. If multiple 
-// classes start at the same time, prioritize the larger class (more students).
-// • Dynamic Allocation: If no classroom is available at a class's start time, delay the class until a room 
-// becomes free. The delayed class retains its original duration.
-// • Room Release: When a class finishes in a room, that room becomes available for the next class with the 
-// highest priority (considering start time and size).
-// Your task is to determine which classroom held the most classes throughout the day. If multiple classrooms are 
-// tied, return the one with the lowest number.
+/*
+ a)
+Imagine you're a scheduling officer at a university with n classrooms numbered 0 to n-1. Several different courses 
+require classrooms throughout the day, represented by an array of classes classes[i] = [starti, endi], where starti is 
+the start time of the class and endi is the end time (both in whole hours). Your goal is to assign each course to a 
+classroom while minimizing disruption and maximizing classroom utilization. Here are the rules:
+• Priority Scheduling: Classes with earlier start times have priority when assigning classrooms. If multiple 
+classes start at the same time, prioritize the larger class (more students).
+• Dynamic Allocation: If no classroom is available at a class's start time, delay the class until a room 
+becomes free. The delayed class retains its original duration.
+• Room Release: When a class finishes in a room, that room becomes available for the next class with the 
+highest priority (considering start time and size).
+Your task is to determine which classroom held the most classes throughout the day. If multiple classrooms are 
+tied, return the one with the lowest number.
+ */
 
 
 import java.util.Arrays;
