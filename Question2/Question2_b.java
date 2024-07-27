@@ -16,7 +16,7 @@ satisfying both the seating distance and movie preference limitations.
 package Question2;
 
 public class Question2_b {
-     /**
+    /**
      * Checks if there are two friends who can sit together based on seating distance
      * and movie preference constraints.
      * 
