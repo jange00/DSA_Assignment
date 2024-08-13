@@ -1,15 +1,8 @@
-/*
-a.
- Imagine a small community with n houses, numbered 0 to n-1. Some houses have restrictions against becoming 
-friends, represented by pairs in the restrictions list. For example, if [0, 1] is in the list, houses 0 and 1 cannot be 
-directly or indirectly friends (through common friends).
-Residents send friend requests to each other, represented by pairs in the requests list. Your task is to determine if 
-each friend request can be accepted based on the current friendship network and the existing restrictions.
- */
-
 package Quesstion3;
 
+
 import java.util.*;
+
 
 public class Question3_a {
     // Union-Find data structure with path compression and union by rank
@@ -23,7 +16,7 @@ public class Question3_a {
             rank = new int[size];
             for (int i = 0; i < size; i++) {
                 parent[i] = i;  // Initialize each element as its own parent
-                rank[i] = 1;    // Initialize rank of each element as 1
+                rank[i] = 1;     // Initialize rank of each element as 1
             }
         }
         
@@ -68,13 +61,13 @@ public class Question3_a {
             int houseA = request[0]; // House A in the request
             int houseB = request[1]; // House B in the request
             
-            // Temporarily union houseA and houseB
-            UnionFind tempUf = new UnionFind(n);
-            for (int i = 0; i < n; i++) {
-                tempUf.parent[i] = uf.parent[i];
-                tempUf.rank[i] = uf.rank[i];
-            }
-            tempUf.union(houseA, houseB); // Temporarily union
+            System.out.println("Processing request: [" + houseA + ", " + houseB + "]");
+            
+            // Find roots of houseA and houseB
+            int rootA = uf.find(houseA);
+            int rootB = uf.find(houseB);
+            System.out.println("Root of " + houseA + " is " + rootA);
+            System.out.println("Root of " + houseB + " is " + rootB);
             
             boolean canBeFriends = true; // Assume the request can be approved initially
             
@@ -83,52 +76,53 @@ public class Question3_a {
                 int restrictedA = restriction[0]; // First restricted house
                 int restrictedB = restriction[1]; // Second restricted house
                 
-                // Check if adding this request violates the restriction
-                if (tempUf.find(restrictedA) == tempUf.find(restrictedB)) {
+                // Find roots of restrictedA and restrictedB
+                int rootRestrictedA = uf.find(restrictedA);
+                int rootRestrictedB = uf.find(restrictedB);
+                
+                System.out.println("Checking restriction: [" + restrictedA + ", " + restrictedB + "]");
+                System.out.println("Root of restricted house " + restrictedA + " is " + rootRestrictedA);
+                System.out.println("Root of restricted house " + restrictedB + " is " + rootRestrictedB);
+                
+                // Check if the current request violates this restriction
+                if ((rootA == rootRestrictedA && rootB == rootRestrictedB) || 
+                    (rootA == rootRestrictedB && rootB == rootRestrictedA)) {
                     canBeFriends = false; // If violated, mark request as denied
+                    System.out.println("Restriction violated. Request denied.");
                     break; // No need to check further restrictions
                 }
             }
             
             // If no restrictions were violated, approve the request and union houseA and houseB
             if (canBeFriends) {
-                uf.union(houseA, houseB); // Union houseA and houseB in the main Union-Find structure
+                uf.union(houseA, houseB); // Union houseA and houseB
                 results.add("approved"); // Add "approved" to results
+                System.out.println("Request approved.");
             } else {
                 results.add("denied"); // Add "denied" to results
             }
+            
+            System.out.println(); // Print a newline for clarity
         }
         
         return results; // Return the list of approval results
     }
     
     public static void main(String[] args) {
-       // Example 1
-    int n1 = 5; // Number of houses
-    int[][] restrictions1 = { {0, 1}, {1, 2}, {2, 3} }; // Restrictions between houses
-    int[][] requests1 = { {0, 4}, {1, 2}, {3, 1}, {3, 4} }; // Friendship requests
-    List<String> results1 = processFriendRequests(n1, restrictions1, requests1);
-    System.out.println("Example 1 - Final Results: " + results1); // Output: [approved, denied, approved, denied]
-
-    // Example 2
-    int n2 = 6; // Number of houses
-    int[][] restrictions2 = { {0, 1}, {2, 3}, {4, 5} }; // Restrictions between houses
-    int[][] requests2 = { {0, 2}, {1, 5}, {3, 4}, {2, 5} }; // Friendship requests
-    List<String> results2 = processFriendRequests(n2, restrictions2, requests2);
-    System.out.println("Example 2 - Final Results: " + results2); // Output: [approved, approved, approved, denied]
-
-    // Example 3
-    int n3 = 4; // Number of houses
-    int[][] restrictions3 = { {0, 1}, {1, 2}, {2, 3}, {0, 3} }; // Restrictions between houses
-    int[][] requests3 = { {0, 2}, {1, 3}, {0, 3}, {2, 3} }; // Friendship requests
-    List<String> results3 = processFriendRequests(n3, restrictions3, requests3);
-    System.out.println("Example 3 - Final Results: " + results3); // Output: [approved, approved, denied, denied]
-
-    // Example 4
-    int n4 = 7; // Number of houses
-    int[][] restrictions4 = { {0, 1}, {2, 3}, {4, 5}, {6, 0}, {1, 4} }; // Restrictions between houses
-    int[][] requests4 = { {0, 2}, {1, 6}, {3, 5}, {2, 5}, {6, 4} }; // Friendship requests
-    List<String> results4 = processFriendRequests(n4, restrictions4, requests4);
-    System.out.println("Example 4 - Final Results: " + results4); // Output: [approved, approved, approved, denied, denied]
+        int n = 5; // Number of houses
+        int[][] restrictions = { {0, 1}, {1, 2}, {2, 3} }; // Restrictions between houses
+        int[][] requests = { {0, 4}, {1, 2}, {3, 1}, {3, 4} }; // Friendship requests
+        
+        // Process friend requests with given restrictions and print final results
+        List<String> results = processFriendRequests(n, restrictions, requests);
+        System.out.println("Final Results: " + results); // Output: [approved, denied, approved, denied]
+        
+        // Additional example
+        int[][] restrictions2 = { {0, 2}, {2, 4}, {1, 3} }; // New restrictions
+        int[][] requests2 = { {0, 1}, {2, 3}, {3, 4}, {1, 4} }; // New friendship requests
+        
+        // Process friend requests with the new restrictions and print final results
+        List<String> results2 = processFriendRequests(n, restrictions2, requests2);
+        System.out.println("Additional Example - Final Results: " + results2); // Expected Output: [approved, approved, denied, approved]
     }
 }

@@ -7,6 +7,25 @@ Specifications:
 • A JTextField for the user to input the mathematical expression.
 • A JButton labeled "Calculate" that triggers the evaluation of the expression.
 • A JLabel to display the result of the calculation.
+3. When the "Calculate" button is clicked, the application should:
+• Retrieve the expression entered by the user from the text field.
+• Evaluate the expression using a custom algorithm (without using any built-in function that evaluates strings as 
+mathematical expressions, such as eval()).
+• Display the result of the evaluation on the label.
+4. The calculator should support basic arithmetic operations, including addition, subtraction, multiplication, and 
+division. It should also handle parentheses for grouping expressions.
+5. The GUI should have an appropriate layout and size to ensure usability and aesthetics.
+6. Ensure proper error handling and validation of user input. Display error messages if the input expression is invalid 
+or cannot be evaluated.
+Example 1:
+Input: s = "1 + 1"
+Output: 2
+Example 2:
+Input: s = " 2-1 + 2 "
+Output: 3
+Example 3:
+Input: s = "(1+(4+5+2)-3)+(6+8)"
+Output: 23
  */
 
  package Question2;

@@ -15,53 +15,58 @@ satisfying both the seating distance and movie preference limitations.
 
 package Question2;
 
+import java.util.*;
+
 public class Question2_b {
     /**
      * Checks if there are two friends who can sit together based on seating distance
-     * and movie preference constraints.
+     * and movie preference constraints, and prints the pairs that satisfy the conditions.
      * 
      * @param nums An array representing seat numbers.
      * @param indexDiff Maximum allowed seat difference between two friends.
      * @param valueDiff Maximum allowed difference in seat numbers for movie preference.
-     * @return true if there exists a pair of indices (i, j) such that:
+     * @return true if there exists at least one pair of indices (i, j) such that:
      *         - The absolute difference between i and j is <= indexDiff.
      *         - The absolute difference between nums[i] and nums[j] is <= valueDiff.
      *         false otherwise.
      */
     public static boolean canSitTogether(int[] nums, int indexDiff, int valueDiff) {
         int n = nums.length;
+        boolean foundPair = false;
 
-        // Iterate through all pairs (i, j)
+        // Use a TreeMap to store the seat numbers and their indices
+        TreeMap<Integer, Integer> seatMap = new TreeMap<>();
+
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                // Print the pair being checked
-                System.out.println("Checking pair (" + i + ", " + j + ")");
-                System.out.println("  Seats: " + nums[i] + ", " + nums[j]);
-
-                // Calculate the seat difference between indices i and j
-                int seatDifference = Math.abs(i - j);
-                
-                // Check if the seat difference is within the allowed index difference
-                if (seatDifference <= indexDiff) {
-                    System.out.println("  Seat difference (" + seatDifference + ") within indexDiff (" + indexDiff + ")");
-
-                    // Calculate the movie preference difference between seat numbers nums[i] and nums[j]
-                    int movieDifference = Math.abs(nums[i] - nums[j]);
-                    
-                    // Check if the movie preference difference is within the allowed value difference
-                    if (movieDifference <= valueDiff) {
-                        System.out.println("  Movie difference (" + movieDifference + ") within valueDiff (" + valueDiff + ")");
-                        return true; // Found a valid pair
-                    } else {
-                        System.out.println("  Movie difference (" + movieDifference + ") exceeds valueDiff (" + valueDiff + ")");
-                    }
-                } else {
-                    System.out.println("  Seat difference (" + seatDifference + ") exceeds indexDiff (" + indexDiff + ")");
-                }
+            int seat = nums[i];
+            int currentIndex = i;
+            
+            // Remove old seat numbers that are out of the allowable index difference range
+            while (!seatMap.isEmpty() && currentIndex - seatMap.firstEntry().getValue() > indexDiff) {
+                seatMap.pollFirstEntry();
             }
+            
+            // Check for valid pairs within the value difference constraint
+            Integer lowerBound = seatMap.floorKey(seat + valueDiff);
+            Integer upperBound = seatMap.ceilingKey(seat - valueDiff);
+            
+            if (lowerBound != null && seatMap.get(lowerBound) != currentIndex) {
+                System.out.println("Valid pair found: Indices (" + seatMap.get(lowerBound) + ", " + currentIndex + ")");
+                System.out.println("  Seats: " + lowerBound + ", " + seat);
+                foundPair = true;
+            }
+            
+            if (upperBound != null && seatMap.get(upperBound) != currentIndex) {
+                System.out.println("Valid pair found: Indices (" + seatMap.get(upperBound) + ", " + currentIndex + ")");
+                System.out.println("  Seats: " + upperBound + ", " + seat);
+                foundPair = true;
+            }
+            
+            // Add the current seat to the TreeMap
+            seatMap.put(seat, currentIndex);
         }
 
-        return false; // No valid pair found
+        return foundPair; // Return whether at least one valid pair was found
     }
 
     /**

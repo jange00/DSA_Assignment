@@ -6,9 +6,10 @@ package Question5;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Question5_a {
-    // Assumed x and y cordinates to represent the cities 
+    // Class to represent a city with x and y coordinates
     static class City {
         int x, y;
 
@@ -23,8 +24,9 @@ public class Question5_a {
         }
     }
 
+    // Main method to execute the hill climbing algorithm and print the results
     public static void main(String[] args) {
-        // Created a list of cities with their co-ordinates
+        // Created a list of cities with their coordinates
         List<City> cities = new ArrayList<>();
         cities.add(new City(0, 0));
         cities.add(new City(10, 0));
@@ -60,14 +62,17 @@ public class Question5_a {
         List<City> currentRoute = new ArrayList<>(cities);
         double currentDistance = totalDistance(currentRoute);
 
+        // Create a Random object for reproducibility
+        Random rand = new Random();
+
         // Perform the hill climbing algorithm for a specified number of iterations
         for (int i = 0; i < maxIterations; i++) {
             // Create a neighbor route by swapping two random cities
             List<City> neighborRoute = new ArrayList<>(currentRoute);
             int i1, i2;
             do {
-                i1 = (int) (Math.random() * currentRoute.size());
-                i2 = (int) (Math.random() * currentRoute.size());
+                i1 = rand.nextInt(currentRoute.size());
+                i2 = rand.nextInt(currentRoute.size());
             } while (i1 == i2); // Ensure the indices are different
 
             Collections.swap(neighborRoute, i1, i2); // Swap the cities
@@ -95,4 +100,3 @@ public class Question5_a {
         return distance;
     }
 }
-

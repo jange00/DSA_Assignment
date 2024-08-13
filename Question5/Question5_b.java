@@ -19,6 +19,7 @@
 
 package Question5;
 
+
 public class Question5_b {
     public int longestHike(int[] nums, int k) {
         int n = nums.length;
@@ -33,8 +34,13 @@ public class Question5_b {
                 // If within limit, update maxLen to be the maximum of current maxLen or current subsequence length.
                 maxLen = Math.max(maxLen, i - start + 1);
             } else {
-                // If not within limit or it's not uphill, reset start index to i to start a new subsequence.
+                // If not within limit or it's not uphill, reset start index to i.
+                // Since we're not in a valid segment, move `start` to `i` only if it's a potential start of a new hike.
                 start = i;
+                // Consider the case where the new hike starts at `i`
+                if (i > 0 && nums[i] > nums[i - 1] && nums[i] - nums[i - 1] <= k) {
+                    start = i - 1;
+                }
             }
         }
 
