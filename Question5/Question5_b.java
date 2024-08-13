@@ -24,16 +24,16 @@ public class Question5_b {
         int n = nums.length;
         if (n == 0) return 0; // If the array is empty, the longest hike length is 0.
 
-        int maxLen = 0; // Variable to store the maximum length of a valid hike.
+        int maxLen = 0; // Initialize maxLen to 0 because we start with no valid hike.
         int start = 0; // Start index of the current valid subsequence.
 
         for (int i = 1; i < n; i++) {
-            // Check if the elevation gain between nums[i-1] and nums[i] is within the limit k.
-            if (nums[i] - nums[i - 1] <= k) {
+            // Check if the elevation gain between nums[i-1] and nums[i] is within the limit k and that we're going uphill.
+            if (nums[i] > nums[i - 1] && nums[i] - nums[i - 1] <= k) {
                 // If within limit, update maxLen to be the maximum of current maxLen or current subsequence length.
                 maxLen = Math.max(maxLen, i - start + 1);
             } else {
-                // If not within limit, reset start index to i to start a new subsequence.
+                // If not within limit or it's not uphill, reset start index to i to start a new subsequence.
                 start = i;
             }
         }
@@ -45,6 +45,6 @@ public class Question5_b {
         Question5_b trail = new Question5_b();
         int[] nums = {4, 2, 1, 4, 3, 4, 5, 8, 15};
         int k = 3;
-        System.out.println("Longest hike: " + trail.longestHike(nums, k));
+        System.out.println("Longest hike: " + trail.longestHike(nums, k)); // Output should be 5
     }
 }

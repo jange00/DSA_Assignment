@@ -15,83 +15,70 @@ tied, return the one with the lowest number.
  */
 
 
-import java.util.Arrays;
-import java.util.PriorityQueue;
-
-public class Question1_a {
-    public static int mostVisitedRoom(int n, int[][] classes) {
-        // Create a priority queue to store the classes
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);
-        for (int[] cl : classes) {
-            pq.offer(cl);
-        }
-
-        // Create an array to store the end time of each room
-        int[] endTime = new int[n];
-        Arrays.fill(endTime, -1);
-
-        // Create an array to store the count of classes in each room
-        int[] count = new int[n];
-
-        // Process the classes
-        while (!pq.isEmpty()) {
-            int[] cl = pq.poll();
-            int startTime = cl[0];
-            int endTimeCl = cl[1];
-
-            // Find the first available room
-            int room = -1;
-            for (int i = 0; i < n; i++) {
-                if (endTime[i] <= startTime) {
-                    room = i;
-                    break;
-                }
-            }
-
-            // If no room is available, delay the class
-            if (room == -1) {
-                int minEndTime = Integer.MAX_VALUE;
-                for (int i = 0; i < n; i++) {
-                    if (endTime[i] < minEndTime) {
-                        minEndTime = endTime[i];
-                        room = i;
-                    }
-                }
-                startTime = minEndTime;
-            }
-
-            // Update the end time and count of the room
-            endTime[room] = endTimeCl;
-            count[room]++;
-
-            // Re-add the class to the priority queue if it's delayed
-            if (startTime > cl[0]) {
-                pq.offer(new int[]{startTime, endTimeCl});
-            }
-        }
-
-        // Find the room with the maximum count
-        int maxCount = Integer.MIN_VALUE;
-        int room = -1;
-        for (int i = 0; i < n; i++) {
-            if (count[i] > maxCount) {
-                maxCount = count[i];
-                room = i;
-            }
-        }
-
-        return room;
-    }
-
-    public static void main(String[] args) {
-        int n = 2;
-        int[][] classes = {{0, 10}, {1, 5}, {2, 7}, {3, 4}};
-        System.out.println(mostVisitedRoom(n, classes)); // Output: 0 or 1 depending on the logic
-
-        n = 3;
-        classes = new int[][]{{1, 20}, {2, 10}, {3, 5}, {4, 9}, {6, 8}};
-        System.out.println(mostVisitedRoom(n, classes)); // Output: 0 or 1 depending on the logic
-    }
-}
-
-
+ import java.util.Arrays;
+ import java.util.PriorityQueue;
+ 
+ public class Question1_a {
+     public static int mostVisitedRoom(int n, int[][] classes) {
+         // Sort classes based on start time, if start times are equal, sort by class size in descending order
+         Arrays.sort(classes, (a, b) -> a[0] == b[0] ? b[1] - b[0] - (a[1] - a[0]) : a[0] - b[0]);
+ 
+         // Priority queue to track the earliest available room (sorted by end time)
+         PriorityQueue<int[]> rooms = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+ 
+         // Initialize all rooms as available at time 0
+         for (int i = 0; i < n; i++) {
+             rooms.offer(new int[]{i, 0});
+         }
+ 
+         // Array to count the number of classes held in each room
+         int[] count = new int[n];
+ 
+         // Process each class
+         for (int[] cl : classes) {
+             int startTime = cl[0];
+             int endTime = cl[1];
+ 
+             // Get the room that becomes available the earliest
+             int[] room = rooms.poll();
+ 
+             // If the room is available by the start time, assign the class
+             if (room[1] <= startTime) {
+                 room[1] = endTime; // Update the room's end time to this class's end time
+             } else {
+                 // If the room is not available, delay the class until the room is free
+                 startTime = room[1];
+                 room[1] = startTime + (endTime - cl[0]); // Adjust the end time accordingly
+             }
+ 
+             // Increase the count for this room
+             count[room[0]]++;
+ 
+             // Re-add the room to the priority queue with its updated end time
+             rooms.offer(room);
+         }
+ 
+         // Find the room with the maximum count of classes held
+         int maxCount = 0;
+         int mostUsedRoom = 0;
+         for (int i = 0; i < n; i++) {
+             if (count[i] > maxCount) {
+                 maxCount = count[i];
+                 mostUsedRoom = i;
+             }
+         }
+ 
+         return mostUsedRoom;
+     }
+ 
+     public static void main(String[] args) {
+         int n = 2;
+         int[][] classes = {{0, 10}, {1, 5}, {2, 7}, {3, 4}};
+         System.out.println(mostVisitedRoom(n, classes)); // Output: 0
+ 
+         n = 3;
+         classes = new int[][]{{1, 20}, {2, 10}, {3, 5}, {4, 9}, {6, 8}};
+         System.out.println(mostVisitedRoom(n, classes)); // Output: 0 or 1 depending on schedule order
+     }
+ }
+ 
